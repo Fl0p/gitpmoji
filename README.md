@@ -28,6 +28,11 @@ This process happens seamlessly, requiring no additional action from the user af
 GITPMOJI_API_KEY=your_openai_api_key
 ```
 
+- install jq
+```
+brew install jq
+```
+
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
 
 - put prepare-commit-msg.sh into .git/hooks/ or make symlink to it
@@ -46,4 +51,5 @@ Simply write your commit messages as usual. GITPMOJI will automatically add rele
 
 ## License
 
-(Add license information here)
+[LICENSE](LICENSE)
+
