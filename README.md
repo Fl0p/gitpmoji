@@ -43,7 +43,16 @@ Simply write your commit messages as usual. GITPMOJI will automatically add rele
 
 ## Examples
 
-(Add some example commit messages with emojis here)
+Check out the commit messages in this repo
+```
+📝 Update Readme
+🔄 skip the prepare-commit-msg hook during a rebase
+📄 Fill readme with actual text
+🚀 Add README.md
+⚠️ Add error displayng
+🚪 Add error exit
+⚙️ Add prepare commit script
+```
 
 ## Contributing
 
