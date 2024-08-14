@@ -8,6 +8,7 @@ RESULT=$(./gpt.sh "$(cat $COMMIT_MSG_FILE)")
 # Check if the previous command was successful
 if [ $? -ne 0 ]; then
     echo "Error: Failed to generate emoji for commit message"
+    echo "$RESULT"
     exit 1
 fi
 
