@@ -1,6 +1,12 @@
 #!/bin/bash
 # The first argument is the path to the commit message file.
 COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+
+# Skip the hook if this is a rebase or merge commit
+if [ "$COMMIT_SOURCE" = "rebase" ] || [ -d "$(git rev-parse --git-dir)/rebase-merge" ] || [ -d "$(git rev-parse --git-dir)/rebase-apply" ]; then
+    exit 0
+fi
 
 # Call gpt.sh with the commit message and store the result
 RESULT=$(./gpt.sh "$(cat $COMMIT_MSG_FILE)")
