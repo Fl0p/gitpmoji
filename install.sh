@@ -13,18 +13,16 @@ curl -o gpt.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/gpt.sh
 chmod +x prepare-commit-msg.sh
 chmod +x gpt.sh
 
-ask_api_key() {
-    read -p "Enter your OpenAI API key (https://platform.openai.com/account/api-keys): " api_key
-    echo "export GITPMOJI_API_KEY=\"$api_key\"" > .gitpmoji.env
-}
+echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
+read -p "GITPMOJI_API_KEY=" api_key
+echo "Enter prefix (sed RegExp) for commit messages which will be untouched as first keyword for each message:"
+read -p "GITPMOJI_PREFIX_RX=" prefix
 
-ask_prefix() {
-    read -p "Enter prefix (sed RegExp) for commit messages which will be untouched as first keyword for each message: " prefix
-    echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
-}
-
-ask_api_key
-ask_prefix
+echo "# your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
+echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
+echo "" >> .gitpmoji.env
+echo "# regex for sed command. emoji will be placed after it if found" >> .gitpmoji.env
+echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
 
 echo "Add file .gitpmoji.env to .gitignore if you want to keep your API key secret"
 
@@ -72,4 +70,6 @@ cd $HOOKS_DIR
 ln -s $RELATIVE_PATH/prepare-commit-msg.sh prepare-commit-msg
 
 cd $CURRENT_DIR
-echo "done"
+echo "Git hooks installed"
+echo "You can now commit with gitpmoji"
+echo "To uninstall just remove $HOOKS_DIR/prepare-commit-msg"
