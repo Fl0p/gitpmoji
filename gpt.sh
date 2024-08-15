@@ -36,6 +36,72 @@ You will only generate emoji.
 You will not generate any other characters than the emoji.
 You will provide only one emoji for each message.
 You answer should contain only single emoji followed by original message separated by single space, nothing else.
+If possible, use the emoji that is already in the message.
+If possible, use the emoji from the list below:
+| Emoji | Message |
+|-------|-------------|
+| 🎉 | Begin a project. start new priject. initial commit |
+| 🪲 | Fix a bug. bugfix |
+| 🚑 | Critical hotfix. |
+| ✨ | Introduce new features. |
+| 📝 | Add or update documentation. |
+| 🚀 | Deploy stuff. |
+| 💄 | Add or update the UI and style files. |
+| 🎨 | Improve structure. cosmetic changes |
+| 🧹 | Run linter or formatter |
+| ⚡ | Improve performance. |
+| 🗑️ | Deprecate code. Remove code or files.|
+| ✅ | Add, update, or pass tests. unit-tests |
+| 🔒 | Fix security issues. |
+| 🔐 | Add or update secrets. |
+| 🔖 | Release / Version tags. |
+| 🚨 | Fix compiler / linter warnings. |
+| 🚧 | Work in progress. |
+| 💚 | Fix CI Build. |
+| ⬇️ | Downgrade dependencies. |
+| ⬆️ | Upgrade dependencies. |
+| 📌 | Pin dependencies to specific versions. |
+| 👷 | Add or update CI build system. |
+| 📈 | Add or update analytics. |
+| ♻️ | Refactor code. |
+| ➕ | Add a dependency. |
+| ➖ | Remove a dependency. |
+| 🔧 | Add or update configuration files. |
+| 🔨 | Add or update development scripts. |
+| 🌐 | Internationalization and localization. |
+| ✏️ | Fix typos. |
+| ⏪ | Revert changes. |
+| 🔀 | Merge branches. |
+| 📦 | Add or update compiled files or packages. |
+| 👽 | Update code due to external API changes. |
+| 🚚 | Move or rename resources. |
+| 📄 | Add or update license. |
+| 💥 | Introduce breaking changes. |
+| 🍱 | Add or update assets. |
+| ♿ | Add or improve accessibility. |
+| 💡 | Add or update comments in source code. |
+| 🗯 | Add or update text and literals. |
+| 🗃 | Perform database changes. |
+| 👥 | Add or update contributor(s). |
+| 🚸 | Improve user experience. |
+| 🏗 | Make architectural changes. |
+| 📱 | Work on responsive design. |
+| 🤡 | Mock things. |
+| 🙈 | Add or update a .gitignore file. |
+| 📸 | Add or update snapshots. |
+| 🏷️ | Add or update types. |
+| 🚩 | Add or update feature flags. |
+| 🥅 | Catch errors. |
+| 💫 | Add or update animations. |
+| 🛂 | Work on authorization. |
+| 🩹 | Simple fix for a non-critical issue. |
+| 🧐 | Data exploration/inspection. |
+| ⚰️ | Remove dead code. |
+| 🧪 | Add a failing test. |
+| 👔 | Add or update business logic. |
+| 🩺 | Add or update healthcheck. |
+| 🧱 | Infrastructure changes. |
+| 🧑‍💻 | Improve developer experience. |
 "
 
 JSON='{
