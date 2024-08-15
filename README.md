@@ -60,7 +60,7 @@ Simply write your commit messages as usual. GITPMOJI will automatically add rele
 
 ## Examples
 
-Check out the commit messages in this repo
+Check out the [commit messages](https://github.com/Fl0p/gitpmoji/commits/main/) in this repo
 ```
 📝 Update Readme
 🔄 skip the prepare-commit-msg hook during a rebase
