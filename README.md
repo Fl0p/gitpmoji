@@ -20,17 +20,33 @@ GITPMOJI integrates with your Git workflow to analyze your commit messages and p
 
 This process happens seamlessly, requiring no additional action from the user after initial setup.
 
-## Setup
+## Setup as one liner wizzard
 
-- Add environment variables to your `.env` file:
+Just run :
 
 ```
-GITPMOJI_API_KEY=your_openai_api_key
+curl -s https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh | bash
 ```
+and follow the instructions.
+
+## Setup manually
 
 - install jq
 ```
 brew install jq
+```
+or
+```
+apt-get install jq
+```
+
+- download `prepare-commit-msg.sh` and `gpt.sh`
+
+- Add environment variables to your `.env` file or create `.gitpmoji.env` file:
+
+```
+GITPMOJI_API_KEY=your_openai_api_key
+GITPMOJI_PREFIX_RX="TICKET-[0-9]+:"
 ```
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable

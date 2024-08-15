@@ -1,9 +1,18 @@
 #!/bin/bash
 
 #script for installing gitpmoji. oneliner
+# to run it as one liner you can use this command:
+# curl -s https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh | bash
 
 CURRENT_DIR=$(pwd)
 echo "gitpmoji will be installed in $CURRENT_DIR"
+
+#check if jq is installed
+if ! command -v jq &> /dev/null
+then
+    echo "jq could not be found, installing it"
+    brew install jq
+fi
 
 #download from github
 curl -o prepare-commit-msg.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/prepare-commit-msg.sh
