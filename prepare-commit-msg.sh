@@ -9,7 +9,9 @@ if [ "$COMMIT_SOURCE" = "rebase" ] || [ -d "$(git rev-parse --git-dir)/rebase-me
 fi
 
 # Call gpt.sh with the commit message and store the result
-RESULT=$(./gpt.sh "$(cat $COMMIT_MSG_FILE)")
+# Get the directory of the script, resolving symlinks
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+RESULT=$("$SCRIPT_DIR/gpt.sh" "$(cat $COMMIT_MSG_FILE)")
 
 # Check if the previous command was successful
 if [ $? -ne 0 ]; then

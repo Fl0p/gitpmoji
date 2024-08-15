@@ -2,6 +2,9 @@
 
 #bash script to run gpt-4o
 
+cd to the directory of the script
+cd "$(dirname "$0")"
+
 #load from env variable
 if [ -f .gitpmoji.env ]; then
     source .gitpmoji.env
