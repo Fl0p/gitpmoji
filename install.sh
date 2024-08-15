@@ -15,12 +15,12 @@ chmod +x gpt.sh
 
 ask_api_key() {
     read -p "Enter your OpenAI API key (https://platform.openai.com/account/api-keys): " api_key
-    echo "export GITPMOJI_API_KEY=$api_key" > .gitpmoji.env
+    echo "export GITPMOJI_API_KEY=\"$api_key\"" > .gitpmoji.env
 }
 
 ask_prefix() {
     read -p "Enter prefix (sed RegExp) for commit messages which will be untouched as first keyword for each message: " prefix
-    echo "export GITPMOJI_PREFIX_RX=$prefix" >> .gitpmoji.env
+    echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
 }
 
 ask_api_key
