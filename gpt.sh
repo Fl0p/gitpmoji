@@ -2,6 +2,11 @@
 
 #bash script to run gpt-4o
 
+#load from env variable
+if [ -f .gitpmoji.env ]; then
+    source .gitpmoji.env
+fi
+
 # load from env variable
 API_KEY=$GITPMOJI_API_KEY
 
@@ -26,23 +31,20 @@ if [ $# -eq 0 ]; then
 fi
 
 PROMPT="$*"
-
 # echo "PROMPT: $PROMPT"
 # Prepare the data for the API call
 
 SYSTEM_PROMPT="You are a system that generates emoji for incoming messages.
-You will be given a message and you will generate an emoji that best represents the message.
-You will only generate emoji.
-You will not generate any other characters than the emoji.
+You will be given a message and your task is to generate an emoji that best represents the message.
 You will provide only one emoji for each message.
-You answer should contain only single emoji followed by original message separated by single space, nothing else.
+Your answer should contain only single emoji, nothing else.
 If possible, use the emoji that is already in the message.
 If possible, use the emoji from the list below:
 | Emoji | Message |
 |-------|-------------|
 | 🎉 | Begin a project. start new priject. initial commit |
 | 🪲 | Fix a bug. bugfix |
-| 🚑 | Critical hotfix. |
+| 🚑 | Critical bug fix. hotfix. |
 | ✨ | Introduce new features. |
 | 📝 | Add or update documentation. |
 | 🚀 | Deploy stuff. |
@@ -104,6 +106,8 @@ If possible, use the emoji from the list below:
 | 🧑‍💻 | Improve developer experience. |
 "
 
+PREFIX_RX="\"" 
+
 JSON='{
   "model": "gpt-4o",
   "messages": [
@@ -133,6 +137,19 @@ RESPONSE=$(curl -s \
                 -d "$DATA")
 
 # Extract and display the answer
-RESULT=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
+EMOJI=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
+
+PREFIX="-"
+
+# check if GITPMOJI_PREFIX_RX is set
+GITPMOJI_PREFIX_RX=$GITPMOJI_PREFIX_RX
+if [ -z "$GITPMOJI_PREFIX_RX" ]; then
+    PREFIX="-"
+else
+    PREFIX=$GITPMOJI_PREFIX_RX
+fi
+
+RESULT=$(echo $PROMPT | sed "s/^\($PREFIX \{0,1\}\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
 
 echo $RESULT
+exit 0
