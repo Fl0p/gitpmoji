@@ -24,8 +24,9 @@ This process happens seamlessly, requiring no additional action from the user af
 
 Just run :
 
+navigate to your project directory and run:
 ```
-curl -s https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh | bash
+curl -o install.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh && bash install.sh && rm install.sh
 ```
 and follow the instructions.
 
