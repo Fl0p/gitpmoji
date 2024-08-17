@@ -2,7 +2,7 @@
 
 #bash script to run gpt-4o
 
-cd to the directory of the script
+#cd to the directory of the script
 cd "$(dirname "$0")"
 
 #load from env variable
