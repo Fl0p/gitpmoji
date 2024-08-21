@@ -22,19 +22,27 @@ curl -o gpt.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/gpt.sh
 chmod +x prepare-commit-msg.sh
 chmod +x gpt.sh
 
-echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
-read -p "GITPMOJI_API_KEY=" api_key
-echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
-echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
-read -p "GITPMOJI_PREFIX_RX=" prefix
+#check if .gitpmoji.env exists
+if [ -f .gitpmoji.env ]; then
+    echo ".gitpmoji.env already exists, skipping setup environment variables"
+    cat .gitpmoji.env
+else
+    echo ".gitpmoji.env does not exist, creating it"
+    echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
+    read -p "GITPMOJI_API_KEY=" api_key
+    echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
+    echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
+    read -p "GITPMOJI_PREFIX_RX=" prefix
 
-echo "# Your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
-echo "GITPMOJI_API_KEY=\"$api_key\""
-echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
-echo "" >> .gitpmoji.env
-echo "# Regex for sed command. emoji will be placed after it if found" >> .gitpmoji.env
-echo "GITPMOJI_PREFIX_RX=\"$prefix\""
-echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
+    echo "# Your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
+    echo "GITPMOJI_API_KEY=\"$api_key\""
+    echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
+    echo "" >> .gitpmoji.env
+    echo "# Regex for sed command. emoji will be placed after it if found" >> .gitpmoji.env
+    echo "GITPMOJI_PREFIX_RX=\"$prefix\""
+    echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
+fi
+
 
 echo "Add file .gitpmoji.env to .gitignore if you want to keep your API key secret"
 
