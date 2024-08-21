@@ -8,7 +8,7 @@ GITPMOJI is a versatile tool that enhances your Git workflow using AI-powered su
 
 ## Description
 
-GITPMOJI integrates with your Git workflow to analyze your commit messages and prepend them with appropriate emojis. It uses OpenAI's GPT-4 model to generate context-aware emoji suggestions based on the content of your commit messages.
+GITPMOJI integrates with your Git workflow to analyze your commit messages and prepend them with appropriate emojis. It uses OpenAI's GPT-4o model to generate context-aware emoji suggestions based on the content of your commit messages.
 
 ## How It Works
 
