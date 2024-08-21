@@ -76,9 +76,9 @@ done
 # Shift the parsed options out of the argument list
 shift $((OPTIND-1))
 
-echo "MESSAGE: $MESSAGE"
-echo "EMOJI: $EMOJI"
-echo "DIFF: $DIFF"
+# echo "MESSAGE: $MESSAGE"
+# echo "EMOJI: $EMOJI"
+# echo "DIFF: $DIFF"
 
 # Check if both emoji and message are provided
 if [ -z "$MESSAGE" ] && [ -z "$DIFF" ]; then
@@ -140,7 +140,7 @@ generate_message() {
                   -d "$DATA")
 
   # Extract and display the answer
-  echo $RESPONSE
+  # echo $RESPONSE
   GPT_MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
   
   if [ -z "$MESSAGE" ]; then
