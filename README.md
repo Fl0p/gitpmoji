@@ -4,7 +4,7 @@
 Emoji-enhanced Git commits using AI suggestions
 ----------------------------------------------
 
-GITPMOJI is a clever tool that automatically adds relevant emojis to your Git commit messages using AI-powered suggestions. It enhances your commit history with visual cues, making it easier to quickly understand the nature of each commit at a glance.
+GITPMOJI is a versatile tool that enhances your Git workflow using AI-powered suggestions. It can generate or update commit messages based on your code changes, providing detailed context for each commit. Additionally, it automatically adds relevant emojis to your commits, offering visual cues that make it easier to understand the nature of each change at a glance. This multi-functional approach transforms your commit history into a more informative and visually appealing log of your project's development.
 
 ## Description
 
