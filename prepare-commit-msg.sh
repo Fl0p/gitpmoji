@@ -13,31 +13,26 @@ RESULT=$COMMIT_MSG
 
 # Get the directory of the script, resolving symlinks
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+TEMP_FILE="/tmp/gptmoji-git_diff_cached.txt"
 
 # Check if variable starts with ~
 if [[ $COMMIT_MSG == *~~~ ]]; then
-    echo "The commit message ends with ~~~ will be replaced with the result of gpt.sh"
+    echo "The commit message ends with '~~~' It will be replaced by AI. Emoji will be added."
     COMMIT_MSG="${COMMIT_MSG%~~~}"
-    echo -e "$COMMIT_MSG"
-
-    echo "---"
-    # Temporary file path
-    TEMP_FILE="/tmp/gptmoji-git_diff_cached.txt"
     git diff --cached > "$TEMP_FILE"
-
     RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG" -d "$TEMP_FILE")
-    echo -e "$RESULT"
-
+    rm "$TEMP_FILE"
+elif [[ $COMMIT_MSG == *~~ ]]; then
+    echo "The commit message ends with '~~' It will be replaced by AI. Emoji will not be added."
+    git diff --cached > "$TEMP_FILE"
+    RESULT=$("$SCRIPT_DIR/gpt.sh" -m "$COMMIT_MSG" -d "$TEMP_FILE")
+    rm "$TEMP_FILE"
+elif [[ $COMMIT_MSG == *~ ]]; then
+    echo "The commit message ends with '~'. Only Emoji will be added by AI."
+    RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG")
 else
-    echo -e "$COMMIT_MSG"
+    echo "The commit message does not end with '~', '~~', or '~~~'. Nothing to do."
 fi
-
-
-exit 1
-
-
-
-RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG")
 
 # Check if the previous command was successful
 if [ $? -ne 0 ]; then

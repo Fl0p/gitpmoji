@@ -76,8 +76,7 @@ done
 # Shift the parsed options out of the argument list
 shift $((OPTIND-1))
 
-echo -e "MESSAGE: $MESSAGE"
-exit 0
+# echo -e "MESSAGE: $MESSAGE"
 # echo "EMOJI: $EMOJI"
 # echo "DIFF: $DIFF"
 
@@ -147,7 +146,7 @@ generate_message() {
   if [ -z "$MESSAGE" ]; then
     MESSAGE=$(echo -e "${GPT_MESSAGE}")
   else
-    MESSAGE=$(echo -e ${MESSAGE} && echo -e "${GPT_MESSAGE}")
+    MESSAGE=$(echo -e "${MESSAGE}""${GPT_MESSAGE}")
   fi
   RESULT=$(echo -e "${MESSAGE}")
 }
@@ -271,6 +270,7 @@ generate_emoji() {
 
   RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
 }
+
 
 if [ "$DIFF" ]; then
   generate_message
