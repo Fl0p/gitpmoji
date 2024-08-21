@@ -25,7 +25,9 @@ chmod +x gpt.sh
 #check if .gitpmoji.env exists
 if [ -f .gitpmoji.env ]; then
     echo ".gitpmoji.env already exists, skipping setup environment variables"
+    echo "--- start of .gitpmoji.env ---"
     cat .gitpmoji.env
+    echo "--- end of .gitpmoji.env ---"
 else
     echo ".gitpmoji.env does not exist, creating it"
     echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
