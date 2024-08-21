@@ -27,6 +27,7 @@ if [ -f .gitpmoji.env ]; then
     echo ".gitpmoji.env already exists, skipping setup environment variables"
     echo "--- start of .gitpmoji.env ---"
     cat .gitpmoji.env
+    echo
     echo "--- end of .gitpmoji.env ---"
 else
     echo ".gitpmoji.env does not exist, creating it"
@@ -39,7 +40,6 @@ else
     echo "# Your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
     echo "GITPMOJI_API_KEY=\"$api_key\""
     echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
-    echo "" >> .gitpmoji.env
     echo "# Regex for sed command. emoji will be placed after it if found" >> .gitpmoji.env
     echo "GITPMOJI_PREFIX_RX=\"$prefix\""
     echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
