@@ -47,7 +47,7 @@ apt-get install jq
 
 ```
 GITPMOJI_API_KEY=your_openai_api_key
-GITPMOJI_PREFIX_RX="TICKET-[0-9]+:"
+GITPMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
 ```
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable

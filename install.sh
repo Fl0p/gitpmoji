@@ -24,13 +24,16 @@ chmod +x gpt.sh
 
 echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
 read -p "GITPMOJI_API_KEY=" api_key
-echo "Enter prefix (sed RegExp) for commit messages which will be untouched as first keyword for each message:"
+echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
+echo "In format of sed RegExp with backslash (\) for escaping special symbols"
 read -p "GITPMOJI_PREFIX_RX=" prefix
 
-echo "# your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
+echo "# Your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
+echo "GITPMOJI_API_KEY=\"$api_key\""
 echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
 echo "" >> .gitpmoji.env
-echo "# regex for sed command. emoji will be placed after it if found" >> .gitpmoji.env
+echo "# Regex for sed command. emoji will be placed after it if found" >> .gitpmoji.env
+echo "GITPMOJI_PREFIX_RX=\"$prefix\""
 echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
 
 echo "Add file .gitpmoji.env to .gitignore if you want to keep your API key secret"

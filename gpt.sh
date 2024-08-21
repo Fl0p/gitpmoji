@@ -152,7 +152,8 @@ else
     PREFIX=$GITPMOJI_PREFIX_RX
 fi
 
-RESULT=$(echo $PROMPT | sed "s/^\($PREFIX \{0,1\}\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
+RESULT=$(echo $PROMPT | sed "s/$EMOJI//g") #remove if already exists
+RESULT=$(echo $PROMPT | sed "s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
 
 echo $RESULT
 exit 0
