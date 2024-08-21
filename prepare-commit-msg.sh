@@ -8,10 +8,36 @@ if [ "$COMMIT_SOURCE" = "rebase" ] || [ -d "$(git rev-parse --git-dir)/rebase-me
     exit 0
 fi
 
-# Call gpt.sh with the commit message and store the result
+COMMIT_MSG=$(cat $COMMIT_MSG_FILE)
+RESULT=$COMMIT_MSG
+
 # Get the directory of the script, resolving symlinks
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-RESULT=$("$SCRIPT_DIR/gpt.sh" "$(cat $COMMIT_MSG_FILE)")
+
+# Check if variable starts with ~
+if [[ $COMMIT_MSG == *~~~ ]]; then
+    echo "The commit message ends with ~~~ will be replaced with the result of gpt.sh"
+    COMMIT_MSG="${COMMIT_MSG%~~~}"
+    echo -e "$COMMIT_MSG"
+
+    echo "---"
+    # Temporary file path
+    TEMP_FILE="/tmp/gptmoji-git_diff_cached.txt"
+    git diff --cached > "$TEMP_FILE"
+
+    RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG" -d "$TEMP_FILE")
+    echo -e "$RESULT"
+
+else
+    echo -e "$COMMIT_MSG"
+fi
+
+
+exit 1
+
+
+
+RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG")
 
 # Check if the previous command was successful
 if [ $? -ne 0 ]; then
@@ -21,4 +47,4 @@ if [ $? -ne 0 ]; then
 fi
 
 # Overwrite the commit message file with the result
-echo "$RESULT" > $COMMIT_MSG_FILE
+echo -e "${RESULT}" > $COMMIT_MSG_FILE

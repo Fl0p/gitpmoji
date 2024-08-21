@@ -76,7 +76,8 @@ done
 # Shift the parsed options out of the argument list
 shift $((OPTIND-1))
 
-# echo "MESSAGE: $MESSAGE"
+echo -e "MESSAGE: $MESSAGE"
+exit 0
 # echo "EMOJI: $EMOJI"
 # echo "DIFF: $DIFF"
 
