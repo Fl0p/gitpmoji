@@ -25,7 +25,7 @@ chmod +x gpt.sh
 echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
 read -p "GITPMOJI_API_KEY=" api_key
 echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
-echo "In format of sed RegExp with backslash (\) for escaping special symbols"
+echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
 read -p "GITPMOJI_PREFIX_RX=" prefix
 
 echo "# Your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
@@ -43,6 +43,7 @@ TOP_LEVEL_GIT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 HOOKS_DIR="$TOP_LEVEL_GIT_DIR/.git/hooks"
 echo "hooks_dir: $HOOKS_DIR"
 
+exit 0
 
 # Get absolute path of the hooks directory
 SOURCE="$(cd "$HOOKS_DIR"; pwd)"
