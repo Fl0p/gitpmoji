@@ -268,7 +268,7 @@ generate_emoji() {
       PREFIX=$GITPMOJI_PREFIX_RX
   fi
 
-  RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1 $EMOJI\2/")
+  RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
 }
 
 if [ "$DIFF" ]; then
