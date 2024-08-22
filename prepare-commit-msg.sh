@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # The first argument is the path to the commit message file.
 COMMIT_MSG_FILE=$1
 COMMIT_SOURCE=$2
@@ -18,20 +19,19 @@ TEMP_FILE="/tmp/gptmoji-git_diff_cached.txt"
 # Check if variable starts with ~
 if [[ $COMMIT_MSG == *~~~ ]]; then
     echo "The commit message ends with '~~~' It will be replaced by AI. Emoji will be added."
-    COMMIT_MSG="${COMMIT_MSG%\~\~\~}"
+    COMMIT_MSG="${COMMIT_MSG%~~~}"
     git diff --cached > "$TEMP_FILE"
     RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG" -d "$TEMP_FILE")
     rm "$TEMP_FILE"
 elif [[ $COMMIT_MSG == *~~ ]]; then
     echo "The commit message ends with '~~' It will be replaced by AI. Emoji will not be added."
-    COMMIT_MSG="${COMMIT_MSG%\~\~}"
+    COMMIT_MSG="${COMMIT_MSG%~~}"
     git diff --cached > "$TEMP_FILE"
     RESULT=$("$SCRIPT_DIR/gpt.sh" -m "$COMMIT_MSG" -d "$TEMP_FILE")
     rm "$TEMP_FILE"
 elif [[ $COMMIT_MSG == *~ ]]; then
     echo "The commit message ends with '~'. Only Emoji will be added by AI."
     COMMIT_MSG="${COMMIT_MSG%\~}"
-    echo -e "$COMMIT_MSG"
     RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG")
 else
     echo "The commit message does not end with '~', '~~', or '~~~'. Nothing to do."
