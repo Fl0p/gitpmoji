@@ -69,13 +69,14 @@ Simply write your commit messages as usual. GITPMOJI will automatically add rele
 
 Check out the [commit messages](https://github.com/Fl0p/gitpmoji/commits/main/) in this repo
 ```
-📝 Update Readme
-🔄 skip the prepare-commit-msg hook during a rebase
-📄 Fill readme with actual text
-🚀 Add README.md
-⚠️ Add error displayng
-🚪 Add error exit
-⚙️ Add prepare commit script
+🩹️ typos fix. fix tilda removing~
+📝 Update README.md to provide a more comprehensive description of GITPMOJI features
+🩹 fix emoji placement
+⚰️ Remove redundant echo
+♻️ Update with commit message generation
+🔧 Add Prefix support and .env file
+➕ Add some predefined Emojis
+🛠️ Refacroring GPT script
 ```
 
 ## Contributing
