@@ -68,6 +68,9 @@ Simply write your commit messages as usual. GITPMOJI will automatically add rele
 ## Examples
 
 Check out the [commit messages](https://github.com/Fl0p/gitpmoji/commits/main/) in this repo
+
+![Screenshot 2024-08-22 at 11 43 32](https://github.com/user-attachments/assets/f69ff571-e304-41c1-baec-7d53219bd756)
+
 ```
 🩹️ typos fix. fix tilda removing~
 📝 Update README.md to provide a more comprehensive description of GITPMOJI features
