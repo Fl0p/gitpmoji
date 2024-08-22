@@ -31,8 +31,9 @@ display_help() {
     echo "Usage: $0 [options]"
     echo
     echo "Options:"
+    echo "  -d              Pipe diff to stdin"
     echo "  -m \"MESSAGE\"  Specify the commit message"
-    echo "  -d DIFF.file    Specify the diff file. Will be used to generate the commit message"
+    echo "  -f DIFF.file    Specify the diff file. Will be used to generate the commit message"
     echo "  -e              Will analyze message and add the emoji"
     echo "  -h              Display this help message"
     echo
@@ -41,24 +42,33 @@ display_help() {
 }
 
 # Parse command line arguments
+DIFF_CONTENT=""
+DIFF_FILE=""
+VERBOSE=false
 EMOJI=false
 MESSAGE=""
 RESULT=""
 
-while getopts "hem:d:" opt; do
+while getopts "hedf:m:v" opt; do
   case $opt in
-    m)
-      MESSAGE="$OPTARG"
-      ;;
-    d)
-      DIFF="$OPTARG"
+    h)
+      display_help
+      exit 0
       ;;
     e)
       EMOJI=true
       ;;
-    h)
-      display_help
-      exit 0
+    d)
+      DIFF_CONTENT=$(cat)
+      ;;
+    f)
+      DIFF_FILE="$OPTARG"
+      ;;
+    m)
+      MESSAGE="$OPTARG"
+      ;;
+    v)
+      VERBOSE=true
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -76,23 +86,31 @@ done
 # Shift the parsed options out of the argument list
 shift $((OPTIND-1))
 
-# echo -e "MESSAGE: $MESSAGE"
-# echo "EMOJI: $EMOJI"
-# echo "DIFF: $DIFF"
+if [ "$VERBOSE" = true ]; then
+  echo -e "DIFF_FILE: $DIFF_FILE"
+  echo -e "DIFF_CONTENT: $DIFF_CONTENT"
+  echo -e "MESSAGE: $MESSAGE"
+  echo -e "EMOJI: $EMOJI"
+fi
 
 # Check if both emoji and message are provided
-if [ -z "$MESSAGE" ] && [ -z "$DIFF" ]; then
-  echo "At least one of the following options is required: -m, -d"
+if [ -z "$DIFF_CONTENT" ] && [ -z "$DIFF_FILE" ] && [ -z "$MESSAGE" ]; then
+  echo "At least one of the following options is required: -d, -f, -m"
   display_help
   exit 1
 fi
 
 generate_message() {
-  if [ ! -f "$DIFF" ]; then
-    echo "no such file $DIFF"
-    exit 1
+
+  #read diff from file
+  if [ ! "$DIFF_CONTENT" ] && [ "$DIFF_FILE" ]; then
+    if [ ! -f "$DIFF_FILE" ]; then
+      echo "no such file $DIFF_FILE"
+      exit 1
+    fi
+    DIFF_CONTENT=$(cat $DIFF_FILE)
   fi
-  DIFF_CONTENT=$(cat $DIFF)
+
   # Check the size of DIFF_CONTENT
   if [ ${#DIFF_CONTENT} -gt 100000 ]; then
     echo "Error: The diff content is too large. Maximum allowed is 100000 characters. (30000 tokens)"
@@ -271,8 +289,7 @@ generate_emoji() {
   RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
 }
 
-
-if [ "$DIFF" ]; then
+if [ "$DIFF_CONTENT" ] || [ "$DIFF_FILE" ]; then
   generate_message
 fi
 
