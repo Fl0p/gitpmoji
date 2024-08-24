@@ -1,14 +1,20 @@
 # GITPMOJI
 ========
 
-Emoji-enhanced Git commits using AI suggestions
-----------------------------------------------
+Enhanced Git commits using AI
+-----------------------------
 
-GITPMOJI is a versatile tool that enhances your Git workflow using AI-powered suggestions. It can generate or update commit messages based on your code changes, providing detailed context for each commit. Additionally, it automatically adds relevant emojis to your commits, offering visual cues that make it easier to understand the nature of each change at a glance. This multi-functional approach transforms your commit history into a more informative and visually appealing log of your project's development.
+GITPMOJI is a powerful AI-driven tool designed to enhance your Git workflow. It offers several key features:
 
-## Description
+1. Commit Message Generation: Analyzes your code changes (diff) and generates comprehensive commit messages, providing detailed context for each commit.
 
-GITPMOJI integrates with your Git workflow to analyze your commit messages and prepend them with appropriate emojis. It uses OpenAI's GPT-4o model to generate context-aware emoji suggestions based on the content of your commit messages.
+2. Code Change Evaluation: Assesses the impact and quality of your code changes, offering insights into the modifications made.
+
+3. Emoji Decoration: Automatically adds relevant emojis to your commits, providing visual cues that make it easier to understand the nature of each change at a glance.
+
+4. Commit Message Enhancement: Can update existing commit messages with additional context based on the code changes.
+
+This multi-functional approach transforms your commit history into a more informative, insightful, and visually appealing log of your project's development. By leveraging AI to generate, evaluate, and decorate your commits, GITPMOJI helps maintain a clear and meaningful record of your project's evolution.
 
 ## How It Works
 
@@ -17,7 +23,8 @@ GITPMOJI integrates with your Git workflow to analyze your commit messages and p
 3. The API, using the GPT-4o model, analyzes the commit message and the diff and updates the commit message.
 4. The suggested emoji is prepended to your original commit message.
 5. The AI generates a commit message based on the diff changes added to at the end of the commit message.
-6. The process respects any existing prefix in your commit messages, as defined by the GITPMOJI_PREFIX_RX environment variable.
+6. Raring of the commit message is added to the end of the commit message.
+7. The process respects any existing prefix in your commit messages, as defined by the GITPMOJI_PREFIX_RX environment variable.
 
 This process happens seamlessly, requiring no additional action from the user after initial setup.
 
@@ -26,6 +33,8 @@ This process happens seamlessly, requiring no additional action from the user af
 1. add ~ to the end of your commit message to let AI update the commit message and add the emoji to it
 2. add ~~ to the end of your commit message to let AI update the commit message based on the diff 
 3. add ~~~ to the end of your commit message to let AI for both update the commit message based on the diff and add the emoji
+4. add * as the last character of your commit message to let AI add the rating to the end of the commit message
+5. use composition like ~~~* or ~~* or ~* to let AI update the commit accordingly
 
 ## Setup as one liner wizzard
 
