@@ -31,11 +31,16 @@ display_help() {
     echo "Usage: $0 [options]"
     echo
     echo "Options:"
-    echo "  -d              Pipe diff to stdin"
-    echo "  -m \"MESSAGE\"  Specify the commit message"
-    echo "  -f DIFF.file    Specify the diff file. Will be used to generate the commit message"
-    echo "  -e              Will analyze message and add the emoji"
     echo "  -h              Display this help message"
+    echo "  -d              Pipe diff to stdin"
+    echo "  -f DIFF.file    Specify the diff file. Will be used to generate the commit message"
+    echo "  -g              Generate the commit message (and emoji)"
+    echo "  -a              Assess the diff or file."
+    echo "  -r              Give starts the rating of the assessment only"
+    echo "  -w              Output the assessment in Markdown format"
+    echo "  -m \"MESSAGE\"  Specify the commit message"
+    echo "  -e              Will analyze message and add the emoji"
+    echo "  -v              Verbose mode"
     echo
     echo "Example:"
     echo "  $0 -e -m \"Implement new feature\""
@@ -44,19 +49,20 @@ display_help() {
 # Parse command line arguments
 DIFF_CONTENT=""
 DIFF_FILE=""
-VERBOSE=false
-EMOJI=false
+GENERATE=false
+ASSESS=false
+RATING=false
+MARKDOWN=false
 MESSAGE=""
 RESULT=""
+VERBOSE=false
+EMOJI=false
 
-while getopts "hedf:m:v" opt; do
+while getopts "hdf:garwm:ev" opt; do
   case $opt in
     h)
       display_help
       exit 0
-      ;;
-    e)
-      EMOJI=true
       ;;
     d)
       DIFF_CONTENT=$(cat)
@@ -64,8 +70,23 @@ while getopts "hedf:m:v" opt; do
     f)
       DIFF_FILE="$OPTARG"
       ;;
+    g)
+      GENERATE=true
+      ;;
+    a)
+      ASSESS=true
+      ;;
+    r)
+      RATING=true
+      ;;
+    w)
+      MARKDOWN=true
+      ;;
     m)
       MESSAGE="$OPTARG"
+      ;;
+    e)
+      EMOJI=true
       ;;
     v)
       VERBOSE=true
@@ -89,19 +110,29 @@ shift $((OPTIND-1))
 if [ "$VERBOSE" = true ]; then
   echo -e "DIFF_FILE: $DIFF_FILE"
   echo -e "DIFF_CONTENT: $DIFF_CONTENT"
+  echo -e "ASSESS: $ASSESS"
+  echo -e "RATING: $RATING"
+  echo -e "MARKDOWN: $MARKDOWN"
   echo -e "MESSAGE: $MESSAGE"
   echo -e "EMOJI: $EMOJI"
 fi
 
 # Check if both emoji and message are provided
-if [ -z "$DIFF_CONTENT" ] && [ -z "$DIFF_FILE" ] && [ -z "$MESSAGE" ]; then
+if [ "$GENERATE" = true ] && [ -z "$DIFF_CONTENT" ] && [ -z "$DIFF_FILE" ] && [ -z "$MESSAGE" ]; then
   echo "At least one of the following options is required: -d, -f, -m"
   display_help
   exit 1
 fi
 
-generate_message() {
+# Check if both emoji and message are provided
+if [ "$ASSESS" = true ] && [ -z "$DIFF_CONTENT" ] && [ -z "$DIFF_FILE" ]; then
+  echo "At least one of the following options is required: -d, -f for assessment"
+  display_help
+  exit 1
+fi
 
+
+get_diff_content() {
   #read diff from file
   if [ ! "$DIFF_CONTENT" ] && [ "$DIFF_FILE" ]; then
     if [ ! -f "$DIFF_FILE" ]; then
@@ -113,9 +144,13 @@ generate_message() {
 
   # Check the size of DIFF_CONTENT
   if [ ${#DIFF_CONTENT} -gt 100000 ]; then
-    echo "Error: The diff content is too large. Maximum allowed is 100000 characters. (30000 tokens)"
+    echo "Error: The diff is too large. Maximum allowed is 100000 characters. (30000 tokens)"
     exit 1
   fi
+}
+
+generate_message() {
+  get_diff_content
 
   # Prepare the data for the API call
   SYSTEM_PROMPT="You are a system that generates git commit messages from diff.
@@ -289,12 +324,90 @@ generate_emoji() {
   RESULT=$(echo -e "${MESSAGE}" | sed "1s/^\($PREFIX\)\{0,1\}\(.*\)$/\1$EMOJI \2/")
 }
 
-if [ "$DIFF_CONTENT" ] || [ "$DIFF_FILE" ]; then
+assess_diff() {
+  get_diff_content
+
+  # Prepare the data for the API call
+  SYSTEM_PROMPT="You are a system that evaluate code quality and assesses the git diff.
+  You will be given a diff and your task is to assess this diff.
+  Analyze code changes in the diff and provide a detailed evaluation of the changes.
+  You will provide only one assessment for each diff.
+  Based on the provided git diff evaluate the code changes on several factors: code cleanliness, structure, readability, complexity, and overall code quality.
+  Use english language for the response only.
+  Use multiple lines for the response.
+  Try to use maximum 300 words in the response.
+  Add the final rating on the scale from 1 to 10 at the end of the response.
+  Use 10 emoji ⭐ and 💩 to indicate the rating.
+  For example: ⭐⭐⭐⭐⭐⭐⭐💩💩💩 means 7 out of 10 and ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ means 10 out of 10.
+  "
+
+  if [ "$RATING" = true ]; then
+    RATING_PROMPT="
+    Your answer should contain only the rating (10 emoji) and nothing else.
+    "
+    SYSTEM_PROMPT=$(echo -e "${SYSTEM_PROMPT}""${RATING_PROMPT}")
+  elif [ "$MARKDOWN" = true ]; then
+    RATING_PROMPT="
+    Provide all the answer in Markdown format.
+    "
+    SYSTEM_PROMPT=$(echo -e "${SYSTEM_PROMPT}""${RATING_PROMPT}")
+  else
+    RATING_PROMPT="
+    Provide the answer in plain text format no additional formatting required. Do not use any Markdown formatting.
+    "
+    SYSTEM_PROMPT=$(echo -e "${SYSTEM_PROMPT}""${RATING_PROMPT}")
+  fi
+
+  JSON='{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": $system_prompt
+      },
+      {
+        "role": "user",
+        "content": $prompt
+      }
+    ],
+    "max_tokens": 500,
+    "temperature": 1,
+    "top_p": 1,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0
+  }'
+
+  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" "$JSON" )
+
+  # Make the API call
+  RESPONSE=$(curl -s \
+                  -X POST "https://api.openai.com/v1/chat/completions" \
+                  -H "Content-Type: application/json" \
+                  -H "Authorization: Bearer $API_KEY" \
+                  -d "$DATA")
+
+  # Extract and display the answer
+  # echo $RESPONSE
+  GPT_MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
+  
+  if [ -z "$MESSAGE" ]; then
+    MESSAGE=$(echo -e "${GPT_MESSAGE}")
+  else
+    MESSAGE=$(echo -e "${MESSAGE}" && echo -e "${GPT_MESSAGE}")
+  fi
+  RESULT=$(echo -e "${MESSAGE}")  
+}
+
+if  [ "$GENERATE" = true ] && ([ "$DIFF_CONTENT" ] || [ "$DIFF_FILE" ]); then
   generate_message
 fi
 
-if [ "$EMOJI" = true ]; then
+if [ "$GENERATE" = true ] && [ "$EMOJI" = true ]; then
   generate_emoji
+fi
+
+if [ "$ASSESS" = true ]; then
+  assess_diff
 fi
 
 echo -e "${RESULT}"

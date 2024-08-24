@@ -15,19 +15,27 @@ RESULT=$COMMIT_MSG
 # Get the directory of the script, resolving symlinks
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
-# Check if variable starts with ~
+EXTRA_ARGS=""
+
+# Check if commit message ends with *
+if [[ $COMMIT_MSG == *\* ]]; then
+    COMMIT_MSG="${COMMIT_MSG%\*}"
+    EXTRA_ARGS="-a -r"
+fi
+
+# Check if commit message ends with ~~~ / ~~ / ~
 if [[ $COMMIT_MSG == *~~~ ]]; then
     echo "The commit message ends with '~~~' It will be replaced by AI. Emoji will be added."
     COMMIT_MSG="${COMMIT_MSG%~~~}"
-    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -d -e -m "$COMMIT_MSG")
+    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -g -d -e $EXTRA_ARGS -m "$COMMIT_MSG")
 elif [[ $COMMIT_MSG == *~~ ]]; then
     echo "The commit message ends with '~~' It will be replaced by AI. Emoji will not be added."
     COMMIT_MSG="${COMMIT_MSG%~~}"
-    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -d -m "$COMMIT_MSG")
+    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -g -d $EXTRA_ARGS-m "$COMMIT_MSG")
 elif [[ $COMMIT_MSG == *~ ]]; then
     echo "The commit message ends with '~'. Only Emoji will be added by AI."
     COMMIT_MSG="${COMMIT_MSG%\~}"
-    RESULT=$("$SCRIPT_DIR/gpt.sh" -e -m "$COMMIT_MSG")
+    RESULT=$("$SCRIPT_DIR/gpt.sh" -g -e $EXTRA_ARGS -m "$COMMIT_MSG")
 else
     echo "The commit message does not end with '~', '~~', or '~~~'. Nothing to do."
 fi
