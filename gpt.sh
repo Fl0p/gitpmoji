@@ -131,8 +131,11 @@ if [ "$ASSESS" = true ] && [ -z "$DIFF_CONTENT" ] && [ -z "$DIFF_FILE" ]; then
   exit 1
 fi
 
-
 get_diff_content() {
+  if [ "$VERBOSE" = true ]; then
+    echo -e "get_diff_content"
+  fi
+
   #read diff from file
   if [ ! "$DIFF_CONTENT" ] && [ "$DIFF_FILE" ]; then
     if [ ! -f "$DIFF_FILE" ]; then
@@ -150,6 +153,10 @@ get_diff_content() {
 }
 
 generate_message() {
+  if [ "$VERBOSE" = true ]; then
+    echo -e "generate_message"
+  fi
+
   get_diff_content
 
   # Prepare the data for the API call
@@ -205,6 +212,10 @@ generate_message() {
 }
 
 generate_emoji() {
+  if [ "$VERBOSE" = true ]; then
+    echo -e "generate_emoji"
+  fi
+
   # Prepare the data for the API call
   SYSTEM_PROMPT="You are a system that generates emoji for incoming messages.
   You will be given a message and your task is to generate an emoji that best represents the message.
@@ -325,6 +336,10 @@ generate_emoji() {
 }
 
 assess_diff() {
+  if [ "$VERBOSE" = true ]; then
+    echo -e "assess_diff"
+  fi
+
   get_diff_content
 
   # Prepare the data for the API call
@@ -390,19 +405,19 @@ assess_diff() {
   # echo $RESPONSE
   GPT_MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
   
-  if [ -z "$MESSAGE" ]; then
-    MESSAGE=$(echo -e "${GPT_MESSAGE}")
+  if [ -z "$RESULT" ]; then
+    RESULT=$(echo -e "${GPT_MESSAGE}")
   else
-    MESSAGE=$(echo -e "${MESSAGE}" && echo -e "${GPT_MESSAGE}")
+    RESULT=$(echo -e "${RESULT}" && echo -e "${GPT_MESSAGE}")
   fi
-  RESULT=$(echo -e "${MESSAGE}")  
 }
+
 
 if  [ "$GENERATE" = true ] && ([ "$DIFF_CONTENT" ] || [ "$DIFF_FILE" ]); then
   generate_message
 fi
 
-if [ "$GENERATE" = true ] && [ "$EMOJI" = true ]; then
+if [ "$EMOJI" = true ]; then
   generate_emoji
 fi
 

@@ -19,6 +19,7 @@ EXTRA_ARGS=""
 
 # Check if commit message ends with *
 if [[ $COMMIT_MSG == *\* ]]; then
+    echo "The commit message ends with '*' Rating will be added."
     COMMIT_MSG="${COMMIT_MSG%\*}"
     EXTRA_ARGS="-a -r"
 fi
@@ -27,17 +28,22 @@ fi
 if [[ $COMMIT_MSG == *~~~ ]]; then
     echo "The commit message ends with '~~~' It will be replaced by AI. Emoji will be added."
     COMMIT_MSG="${COMMIT_MSG%~~~}"
-    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -g -d -e $EXTRA_ARGS -m "$COMMIT_MSG")
+    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -d -g -e $EXTRA_ARGS -m "$COMMIT_MSG")
 elif [[ $COMMIT_MSG == *~~ ]]; then
     echo "The commit message ends with '~~' It will be replaced by AI. Emoji will not be added."
     COMMIT_MSG="${COMMIT_MSG%~~}"
-    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -g -d $EXTRA_ARGS-m "$COMMIT_MSG")
+    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -d -g $EXTRA_ARGS -m "$COMMIT_MSG")
 elif [[ $COMMIT_MSG == *~ ]]; then
     echo "The commit message ends with '~'. Only Emoji will be added by AI."
     COMMIT_MSG="${COMMIT_MSG%\~}"
-    RESULT=$("$SCRIPT_DIR/gpt.sh" -g -e $EXTRA_ARGS -m "$COMMIT_MSG")
+    RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -d -e $EXTRA_ARGS -m "$COMMIT_MSG")
 else
-    echo "The commit message does not end with '~', '~~', or '~~~'. Nothing to do."
+    if [ -z "$EXTRA_ARGS" ]; then
+        echo "The commit message does not end with '~', '~~', or '~~~'. Nothing to do."
+    else
+        echo "The commit message does not end with '*' Only rating will be added."
+        RESULT=$(git diff --cached | "$SCRIPT_DIR/gpt.sh" -d $EXTRA_ARGS -m "$COMMIT_MSG")
+    fi
 fi
 
 # Check if the previous command was successful
