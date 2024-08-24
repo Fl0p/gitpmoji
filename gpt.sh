@@ -350,7 +350,7 @@ assess_diff() {
   Based on the provided git diff evaluate the code changes on several factors: code cleanliness, structure, readability, complexity, and overall code quality.
   Use english language for the response only.
   Use multiple lines for the response.
-  Try to use maximum 300 words in the response.
+  Try to use maximum 250 words in the response.
   Add the final rating on the scale from 1 to 10 at the end of the response.
   Use 10 emoji ⭐ and 💩 to indicate the rating.
   For example: ⭐⭐⭐⭐⭐⭐⭐💩💩💩 means 7 out of 10 and ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ means 10 out of 10.
