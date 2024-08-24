@@ -32,7 +32,7 @@ This process happens seamlessly, requiring no additional action from the user af
 
 1. add ~ to the end of your commit message to let AI update the commit message and add the emoji to it
 2. add ~~ to the end of your commit message to let AI update the commit message based on the diff 
-3. add ~~~ to the end of your commit message to let AI for both update the commit message based on the diff and add the emoji
+3. add ~~~ to the end of your commit message to let AI for both update the commit message and add the emoji
 4. add * as the last character of your commit message to let AI add the rating to the end of the commit message
 5. use composition like ~~~* or ~~* or ~* to let AI update the commit accordingly
 
