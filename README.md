@@ -18,12 +18,12 @@ This multi-functional approach transforms your commit history into a more inform
 
 ## How It Works
 
-1. When you make a commit, GITPMOJI intercepts the commit message using a Git hook.
+1. When you make a commit, GITPMOJI intercepts the commit message using a Git hook. So it works with all git clients and IDEs that use git hooks.
 2. The commit message and diff are sent to a custom script (`gpt.sh`) that communicates with the OpenAI API.
 3. The API, using the GPT-4o model, analyzes the commit message and the diff and updates the commit message.
 4. The suggested emoji is prepended to your original commit message.
-5. The AI generates a commit message based on the diff changes added to at the end of the commit message.
-6. Raring of the commit message is added to the end of the commit message.
+5. The AI generates a commit message based on the diff changes added to at the end of the original commit message.
+6. Rating of the commit message is added to the end of the commit message.
 7. The process respects any existing prefix in your commit messages, as defined by the GITPMOJI_PREFIX_RX environment variable.
 
 This process happens seamlessly, requiring no additional action from the user after initial setup.
