@@ -36,13 +36,29 @@ else
     echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
     echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
     read -p "GITPMOJI_PREFIX_RX=" prefix
+    echo "Enter base url for OpenAI API (leave empty for default 'https://api.openai.com/v1')"
+    read -p "GITPMOJI_API_BASE_URL=" base_url
+    if [ -z "$base_url" ]; then
+        base_url="https://api.openai.com/v1"
+    fi
+    echo "Enter model for OpenAI API (leave empty for default 'gpt-4o')"
+    read -p "GITPMOJI_API_MODEL=" model
+    if [ -z "$model" ]; then
+        model="gpt-4o"
+    fi
 
-    echo "# Your api key you can get one here https://platform.openai.com/account/api-keys" > .gitpmoji.env
-    echo "GITPMOJI_API_KEY=\"$api_key\""
-    echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
-    echo "# Regex for sed command. emoji will be placed after it if found" >> .gitpmoji.env
-    echo "GITPMOJI_PREFIX_RX=\"$prefix\""
-    echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
+    cat << EOF > .gitpmoji.env
+# Your api key you can get one here https://platform.openai.com/account/api-keys
+GITPMOJI_API_KEY="$api_key"
+export GITPMOJI_API_KEY="$api_key"
+# Regex for sed command. emoji will be placed after it if found
+GITPMOJI_PREFIX_RX="$prefix"
+export GITPMOJI_PREFIX_RX="$prefix"
+GITPMOJI_API_BASE_URL="$base_url"
+export GITPMOJI_API_BASE_URL="$base_url"
+GITPMOJI_API_MODEL="$model"
+export GITPMOJI_API_MODEL="$model"
+EOF
 fi
 
 
