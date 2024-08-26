@@ -12,6 +12,8 @@ fi
 
 # load from env variable
 API_KEY=$GITPMOJI_API_KEY
+API_BASE_URL=${GITPMOJI_API_BASE_URL:-https://api.openai.com/v1}
+API_MODEL=${GITPMOJI_API_MODEL:-gpt-4o}
 
 # check if API_KEY is set
 if [ -z "$API_KEY" ]; then
@@ -172,7 +174,7 @@ generate_message() {
   PREFIX_RX="\"" 
 
   JSON='{
-    "model": "gpt-4o",
+    "model": "$API_MODEL",
     "messages": [
       {
         "role": "system",
@@ -194,7 +196,7 @@ generate_message() {
 
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "https://api.openai.com/v1/chat/completions" \
+                  -X POST "$API_BASE_URL/chat/completions" \
                   -H "Content-Type: application/json" \
                   -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
@@ -292,7 +294,7 @@ generate_emoji() {
   PREFIX_RX="\"" 
 
   JSON='{
-    "model": "gpt-4o",
+    "model": "'$API_MODEL'",
     "messages": [
       {
         "role": "system",
@@ -314,7 +316,7 @@ generate_emoji() {
 
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "https://api.openai.com/v1/chat/completions" \
+                  -X POST "$API_BASE_URL/chat/completions" \
                   -H "Content-Type: application/json" \
                   -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
@@ -374,7 +376,7 @@ assess_diff() {
   fi
 
   JSON='{
-    "model": "gpt-4o",
+    "model": "$API_MODEL",
     "messages": [
       {
         "role": "system",
@@ -396,7 +398,7 @@ assess_diff() {
 
   # Make the API call
   RESPONSE=$(curl -s \
-                  -X POST "https://api.openai.com/v1/chat/completions" \
+                  -X POST "$API_BASE_URL/chat/completions" \
                   -H "Content-Type: application/json" \
                   -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
