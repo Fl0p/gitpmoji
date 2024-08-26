@@ -174,7 +174,7 @@ generate_message() {
   PREFIX_RX="\"" 
 
   JSON='{
-    "model": "$API_MODEL",
+    "model": $api_model,
     "messages": [
       {
         "role": "system",
@@ -192,7 +192,7 @@ generate_message() {
     "presence_penalty": 0.0
   }'
 
-  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" "$JSON" )
+  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON" )
 
   # Make the API call
   RESPONSE=$(curl -s \
@@ -294,7 +294,7 @@ generate_emoji() {
   PREFIX_RX="\"" 
 
   JSON='{
-    "model": "'$API_MODEL'",
+    "model": $api_model,
     "messages": [
       {
         "role": "system",
@@ -312,7 +312,7 @@ generate_emoji() {
     "presence_penalty": 0.0
   }'
 
-  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$MESSAGE" "$JSON" )
+  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$MESSAGE" --arg api_model "$API_MODEL" "$JSON" )
 
   # Make the API call
   RESPONSE=$(curl -s \
@@ -376,7 +376,7 @@ assess_diff() {
   fi
 
   JSON='{
-    "model": "$API_MODEL",
+    "model": $api_model,
     "messages": [
       {
         "role": "system",
@@ -394,7 +394,7 @@ assess_diff() {
     "presence_penalty": 0.0
   }'
 
-  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" "$JSON" )
+  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON" )
 
   # Make the API call
   RESPONSE=$(curl -s \
