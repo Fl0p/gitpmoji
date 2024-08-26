@@ -62,7 +62,13 @@ apt-get install jq
 ```
 GITPMOJI_API_KEY=your_openai_api_key
 GITPMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
+GITPMOJI_API_BASE_URL=https://api.openai.com/v1
+GITPMOJI_API_MODEL=gpt-4o
 ```
+
+> ❗ Note: 
+> - GITPMOJI_API_BASE_URL is optional and defaults to https://api.openai.com/v1
+> - GITPMOJI_API_MODEL is optional and defaults to gpt-4o
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
 
