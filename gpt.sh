@@ -192,7 +192,7 @@ generate_message() {
     "presence_penalty": 0.0
   }'
 
-  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" '$JSON')
+  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
 
   # Make the API call
   RESPONSE=$(curl -s \
@@ -312,7 +312,7 @@ generate_emoji() {
     "presence_penalty": 0.0
   }'
 
-  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$MESSAGE" --arg api_model "$API_MODEL" '$JSON')
+  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$MESSAGE" --arg api_model "$API_MODEL" "$JSON")
 
   # Make the API call
   RESPONSE=$(curl -s \
@@ -394,7 +394,7 @@ assess_diff() {
     "presence_penalty": 0.0
   }'
 
-   DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" '$JSON')
+   DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
   # Make the API call
   RESPONSE=$(curl -s \
                   -X POST "$API_BASE_URL/chat/completions" \
