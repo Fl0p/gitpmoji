@@ -47,17 +47,19 @@ else
         model="gpt-4o"
     fi
 
+    echo "GITPMOJI_API_KEY=\"$api_key\""
+    echo "GITPMOJI_PREFIX_RX=\"$prefix\""
+    echo "GITPMOJI_API_BASE_URL=\"$base_url\""
+    echo "GITPMOJI_API_MODEL=\"$model\""
+    
     cat << EOF > .gitpmoji.env
 # Your api key you can get one here https://platform.openai.com/account/api-keys
-GITPMOJI_API_KEY="$api_key"
 export GITPMOJI_API_KEY="$api_key"
 # Regex for sed command. emoji will be placed after it if found
-GITPMOJI_PREFIX_RX="$prefix"
 export GITPMOJI_PREFIX_RX="$prefix"
-GITPMOJI_API_BASE_URL="$base_url"
 export GITPMOJI_API_BASE_URL="$base_url"
-GITPMOJI_API_MODEL="$model"
 export GITPMOJI_API_MODEL="$model"
+EOF
 EOF
 fi
 
