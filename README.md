@@ -72,7 +72,9 @@ GITPMOJI_API_MODEL=gpt-4o
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
 
-- put prepare-commit-msg.sh into .git/hooks/ or make symlink to it
+- rename `prepare-commit-msg.sh` to `prepare-commit-msg`
+
+- put `prepare-commit-msg`, `gpt.sh` and `.gitpmoji.env` into `.git/hooks/`
 
 ## Usage
 
