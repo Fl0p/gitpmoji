@@ -62,7 +62,7 @@ export GITPMOJI_API_MODEL="$model"
 EOF
 fi
 
-echo "Add file .gitpmoji.env to .gitignore if you want to keep your API key secret"
+echo -e "\e[31mAdd file .gitpmoji.env to .gitignore if you want to keep your API key secret\e[0m"
 
 TOP_LEVEL_GIT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 
