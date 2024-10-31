@@ -34,6 +34,15 @@ This process happens seamlessly, requiring no additional action from the user af
 4. add * as the last character of your commit message to let AI add the rating to the end of the commit message
 5. use composition like ~~~* or ~~* or ~* to let AI update the commit accordingly
 
+## Assessing Code Changes
+
+GITPMOJI also provides a feature to assess the quality of your code changes. You can use the `./gpt -a` command to evaluate the impact and quality of your code modifications. This command analyzes the git diff and provides a detailed assessment based on several factors such as code cleanliness, structure, readability, complexity, and overall code quality.
+
+To use this feature, simply run:
+```
+git diff | ./gpt.sh -a -d
+```
+
 ## Setup as one liner wizzard
 
 Just run :
