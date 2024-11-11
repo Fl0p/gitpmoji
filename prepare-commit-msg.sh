@@ -48,7 +48,8 @@ fi
 
 # Check if the previous command was successful
 if [ $? -ne 0 ]; then
-    echo "Error: Failed to generate emoji for commit message"
+    echo "Error: Failed to run gpt.sh"
+    echo "$RESULT"
     exit 1
 fi
 

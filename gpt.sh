@@ -154,6 +154,20 @@ get_diff_content() {
   fi
 }
 
+
+check_for_errors() {
+  local response=$1
+  ERROR=$(echo $response | jq -r '.error.message')
+  if [ "$ERROR" == 'null' ]; then
+    return
+  fi
+  if [ "$ERROR" ]; then
+    echo -e "ERROR: $ERROR"
+    echo -e "RESPONSE: $response"
+    exit 1
+  fi
+}
+
 generate_message() {
   if [ "$VERBOSE" = true ]; then
     echo -e "generate_message"
@@ -201,8 +215,9 @@ generate_message() {
                   -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
 
+  check_for_errors "$RESPONSE"
+
   # Extract and display the answer
-  # echo $RESPONSE
   GPT_MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
   
   if [ -z "$MESSAGE" ]; then
@@ -321,6 +336,8 @@ generate_emoji() {
                   -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
 
+  check_for_errors "$RESPONSE"
+
   # Extract and display the answer
   EMOJI=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
 
@@ -394,7 +411,8 @@ assess_diff() {
     "presence_penalty": 0.0
   }'
 
-   DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
+  DATA=$(jq -n --arg system_prompt "$SYSTEM_PROMPT" --arg prompt "$DIFF_CONTENT" --arg api_model "$API_MODEL" "$JSON")
+
   # Make the API call
   RESPONSE=$(curl -s \
                   -X POST "$API_BASE_URL/chat/completions" \
@@ -402,8 +420,9 @@ assess_diff() {
                   -H "Authorization: Bearer $API_KEY" \
                   -d "$DATA")
 
+  check_for_errors "$RESPONSE"
+
   # Extract and display the answer
-  # echo $RESPONSE
   GPT_MESSAGE=$(echo $RESPONSE | jq -r '.choices[0].message.content' | sed 's/^"//;s/"$//')
   
   if [ -z "$RESULT" ]; then
