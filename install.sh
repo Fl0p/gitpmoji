@@ -20,11 +20,11 @@ TOP_LEVEL_GIT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 echo "Top level project dir: $TOP_LEVEL_GIT_DIR"
 ls -la $TOP_LEVEL_GIT_DIR
 
-echo "Enter dir name where gitpmoji scripts will be installed. Just press enter for default 'gitpmoji'"
+echo "Enter dir name where gitpmoji scripts will be installed. Just press enter for default '.gitpmoji'"
 read -p "GITPMOJI_DIR=" GITPMOJI_DIR
 
 if [ -z "$GITPMOJI_DIR" ]; then
-    GITPMOJI_DIR="gitpmoji"
+    GITPMOJI_DIR=".gitpmoji"
 fi
 
 GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR/$GITPMOJI_DIR"
