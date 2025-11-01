@@ -194,48 +194,15 @@ echo "git hooks dir: $HOOKS_DIR"
 
 echo "Going to install git hook for prepare-commit-msg"
 
-relative_path() {
-    local common_part="$1" # for now
-    local result="." # for now
-
-    while [[ "${2#"$common_part"}" == "${2}" ]]; do
-        # no match, means that candidate common part is not correct
-        common_part="$(dirname "$common_part")"
-        result="${result}/.." # move to parent dir in relative path
-    done
-
-    if [[ "$common_part" == "/" ]]; then
-        # special case for root (no common path)
-        result="$result/"
-    fi
-
-    # since we now have identified the common part,
-    # compute the non-common part
-    local forward_part="${2#"$common_part"}"
-    # and now stick all parts together
-    result="${result}${forward_part}"
-    echo "$result"
-}
-
-echo "Looking for relative path between:"
-# Get absolute path of gitpmoji install dir
-TARGET="$(cd "$GITPMOJI_INSTALL_DIR"; pwd)"
-# Get absolute path of the hooks directory
-SOURCE="$(cd "$HOOKS_DIR"; pwd)"
-
-echo "TARGET: $TARGET"
-echo "SOURCE: $SOURCE"
-
-RELATIVE_PATH=$(relative_path "$SOURCE" "$TARGET")
-
-echo "RELATIVE_PATH: $RELATIVE_PATH"
-
 cd $HOOKS_DIR
 
-echo "Creating symlink for prepare-commit-msg"
-echo "ln -sf $RELATIVE_PATH/prepare-commit-msg.sh prepare-commit-msg"
+# Simple relative path: from .git/hooks go up twice (../../) then into GITPMOJI_DIR
+SYMLINK_PATH="../../$GITPMOJI_DIR/prepare-commit-msg.sh"
 
-ln -sf $RELATIVE_PATH/prepare-commit-msg.sh prepare-commit-msg
+echo "Creating symlink for prepare-commit-msg"
+echo "ln -sf $SYMLINK_PATH prepare-commit-msg"
+
+ln -sf $SYMLINK_PATH prepare-commit-msg
 
 cd $TOP_LEVEL_GIT_DIR
 
