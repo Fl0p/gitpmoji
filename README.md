@@ -46,15 +46,26 @@ git diff | ./gpt.sh -a -d
 
 
 
-## Setup as one liner wizzard
+## Setup as one liner wizard
 
-Just run :
-
-navigate to your project directory and run:
+Navigate to your project directory and run:
 ```
 curl -o install.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh && bash install.sh && rm install.sh
 ```
 and follow the instructions.
+
+### Installation Options
+
+The installer will prompt you to choose where to install gitpmoji:
+- **Default (`.gitpmoji`)**: Press Enter to install in a hidden `.gitpmoji` directory (recommended, automatically added to `.gitignore`)
+- **Project root**: Enter `.` to install scripts directly in your project root
+
+### Global Configuration Support
+
+The installer now supports global configuration:
+- Create `~/.gitpmoji.env` to store your API key and settings globally
+- During installation, you can choose to use global settings or override them locally
+- Local `.gitpmoji.env` will source global config and can override specific values
 
 ## Setup manually
 
@@ -69,24 +80,32 @@ apt-get install jq
 
 - download `prepare-commit-msg.sh` and `gpt.sh`
 
-- Add environment variables to your `.env` file or create `.gitpmoji.env` file:
+- Create `.gitpmoji.env` file in your project root or globally at `~/.gitpmoji.env`:
 
-```
-GITPMOJI_API_KEY=your_openai_api_key
-GITPMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
-GITPMOJI_API_BASE_URL=https://api.openai.com/v1
-GITPMOJI_API_MODEL=gpt-4o
+```bash
+# Your api key you can get one here https://platform.openai.com/account/api-keys
+export GITPMOJI_API_KEY="your_openai_api_key"
+export GITPMOJI_API_BASE_URL="https://api.openai.com/v1"
+export GITPMOJI_API_MODEL="gpt-4o"
+# Regex for sed command. emoji will be placed after it if found
+export GITPMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
 ```
 
 > ❗ Note: 
 > - GITPMOJI_API_BASE_URL is optional and defaults to https://api.openai.com/v1
 > - GITPMOJI_API_MODEL is optional and defaults to gpt-4o
+> - Local `.gitpmoji.env` can source global `~/.gitpmoji.env` and override specific values
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
 
-- rename `prepare-commit-msg.sh` to `prepare-commit-msg`
-
-- put `prepare-commit-msg`, `gpt.sh` and `.gitpmoji.env` into `.git/hooks/`
+- create symlink in `.git/hooks/`:
+```bash
+ln -sf ../../.gitpmoji/prepare-commit-msg.sh .git/hooks/prepare-commit-msg
+```
+or if installed in project root:
+```bash
+ln -sf ../../prepare-commit-msg.sh .git/hooks/prepare-commit-msg
+```
 
 ## Usage
 
