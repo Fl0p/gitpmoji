@@ -20,17 +20,22 @@ TOP_LEVEL_GIT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 echo "Top level project dir: $TOP_LEVEL_GIT_DIR"
 ls -la $TOP_LEVEL_GIT_DIR
 
-echo "Enter dir name where gitpmoji scripts will be installed. Just press enter for default '.gitpmoji'"
+echo "Enter dir name where gitpmoji scripts will be installed."
+echo "Just press enter for default '.gitpmoji' or use '.' to install in project root"
 read -p "GITPMOJI_DIR=" GITPMOJI_DIR
 
 if [ -z "$GITPMOJI_DIR" ]; then
     GITPMOJI_DIR=".gitpmoji"
 fi
 
-GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR/$GITPMOJI_DIR"
-echo "gitpmoji will be installed in $GITPMOJI_INSTALL_DIR"
-
-mkdir -p $GITPMOJI_INSTALL_DIR
+if [ "$GITPMOJI_DIR" = "." ]; then
+    GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR"
+    echo "gitpmoji will be installed in project root: $GITPMOJI_INSTALL_DIR"
+else
+    GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR/$GITPMOJI_DIR"
+    echo "gitpmoji will be installed in $GITPMOJI_INSTALL_DIR"
+    mkdir -p $GITPMOJI_INSTALL_DIR
+fi
 cd $GITPMOJI_INSTALL_DIR
 pwd
 
@@ -197,7 +202,11 @@ echo "Going to install git hook for prepare-commit-msg"
 cd $HOOKS_DIR
 
 # Simple relative path: from .git/hooks go up twice (../../) then into GITPMOJI_DIR
-SYMLINK_PATH="../../$GITPMOJI_DIR/prepare-commit-msg.sh"
+if [ "$GITPMOJI_DIR" = "." ]; then
+    SYMLINK_PATH="../../prepare-commit-msg.sh"
+else
+    SYMLINK_PATH="../../$GITPMOJI_DIR/prepare-commit-msg.sh"
+fi
 
 echo "Creating symlink for prepare-commit-msg"
 echo "ln -sf $SYMLINK_PATH prepare-commit-msg"
