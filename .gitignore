@@ -4,3 +4,6 @@
 test/
 test2/
 test3/
+
+# ignore gitpmoji directory
+.gitpmoji

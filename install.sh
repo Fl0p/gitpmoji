@@ -20,17 +20,22 @@ TOP_LEVEL_GIT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 echo "Top level project dir: $TOP_LEVEL_GIT_DIR"
 ls -la $TOP_LEVEL_GIT_DIR
 
-echo "Enter dir name where gitpmoji scripts will be installed. use '.' for current dir. just press enter for default 'gitpmoji'"
+echo "Enter dir name where gitpmoji scripts will be installed."
+echo "Just press enter for default '.gitpmoji' or use '.' to install in project root"
 read -p "GITPMOJI_DIR=" GITPMOJI_DIR
 
 if [ -z "$GITPMOJI_DIR" ]; then
-    GITPMOJI_DIR="gitpmoji"
+    GITPMOJI_DIR=".gitpmoji"
 fi
 
-GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR/$GITPMOJI_DIR"
-echo "gitpmoji will be installed in $GITPMOJI_INSTALL_DIR"
-
-mkdir -p $GITPMOJI_INSTALL_DIR
+if [ "$GITPMOJI_DIR" = "." ]; then
+    GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR"
+    echo "gitpmoji will be installed in project root: $GITPMOJI_INSTALL_DIR"
+else
+    GITPMOJI_INSTALL_DIR="$TOP_LEVEL_GIT_DIR/$GITPMOJI_DIR"
+    echo "gitpmoji will be installed in $GITPMOJI_INSTALL_DIR"
+    mkdir -p $GITPMOJI_INSTALL_DIR
+fi
 cd $GITPMOJI_INSTALL_DIR
 pwd
 
@@ -58,36 +63,120 @@ if [ -f .gitpmoji.env ]; then
     cat .gitpmoji.env
     echo "--- end of .gitpmoji.env ---"
 else
-    echo ".gitpmoji.env does not exist, creating it"
-    echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
-    read -p "GITPMOJI_API_KEY=" api_key
-    echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
-    echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
-    read -p "GITPMOJI_PREFIX_RX=" prefix
-    echo "Enter base url for OpenAI API (leave empty for default 'https://api.openai.com/v1')"
-    read -p "GITPMOJI_API_BASE_URL=" base_url
-    if [ -z "$base_url" ]; then
-        base_url="https://api.openai.com/v1"
-    fi
-    echo "Enter model for OpenAI API (leave empty for default 'gpt-4o')"
-    read -p "GITPMOJI_API_MODEL=" model
-    if [ -z "$model" ]; then
-        model="gpt-4o"
-    fi
-
-    echo "GITPMOJI_API_KEY=\"$api_key\""
-    echo "GITPMOJI_PREFIX_RX=\"$prefix\""
-    echo "GITPMOJI_API_BASE_URL=\"$base_url\""
-    echo "GITPMOJI_API_MODEL=\"$model\""
+    echo "Creating .gitpmoji.env file..."
     
-    cat << EOF > .gitpmoji.env
-# Your api key you can get one here https://platform.openai.com/account/api-keys
-export GITPMOJI_API_KEY="$api_key"
-# Regex for sed command. emoji will be placed after it if found
-export GITPMOJI_PREFIX_RX="$prefix"
-export GITPMOJI_API_BASE_URL="$base_url"
-export GITPMOJI_API_MODEL="$model"
+    # Create file with header comment
+    cat << 'EOF' > .gitpmoji.env
+# gitpmoji environment configuration file
+# This file contains environment variables for gitpmoji
+# You can also create a global config file at ~/.gitpmoji.env
+# Local settings in this file will override global settings from ~/.gitpmoji.env
+
 EOF
+
+    # Source global config if exists
+    echo "# Source global config if exists" >> .gitpmoji.env
+    echo "if [ -f ~/.gitpmoji.env ]; then" >> .gitpmoji.env
+    echo "    source ~/.gitpmoji.env" >> .gitpmoji.env
+    echo "fi" >> .gitpmoji.env
+    echo "" >> .gitpmoji.env
+    
+    # Load global config to check for existing variables
+    if [ -f ~/.gitpmoji.env ]; then
+        source ~/.gitpmoji.env
+        echo "Found global config at ~/.gitpmoji.env"
+    fi
+    
+    # Process GITPMOJI_API_KEY
+    if [ -n "$GITPMOJI_API_KEY" ]; then
+        echo "Global GITPMOJI_API_KEY found"
+        echo "Use global GITPMOJI_API_KEY? (y/n)"
+        read USE_GLOBAL_API_KEY
+        if [ "$USE_GLOBAL_API_KEY" = "y" ]; then
+            echo "#export GITPMOJI_API_KEY=\"_your_api_key_\"" >> .gitpmoji.env
+        else
+            echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
+            read -p "GITPMOJI_API_KEY=" api_key
+            echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
+        fi
+    else
+        echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
+        read -p "GITPMOJI_API_KEY=" api_key
+        echo "export GITPMOJI_API_KEY=\"$api_key\"" >> .gitpmoji.env
+    fi
+    
+    # Process GITPMOJI_API_BASE_URL
+    if [ -n "$GITPMOJI_API_BASE_URL" ]; then
+        echo "Global GITPMOJI_API_BASE_URL found: $GITPMOJI_API_BASE_URL"
+        echo "Use global GITPMOJI_API_BASE_URL? (y/n)"
+        read USE_GLOBAL_BASE_URL
+        if [ "$USE_GLOBAL_BASE_URL" = "y" ]; then
+            echo "#export GITPMOJI_API_BASE_URL=\"https://api.openai.com/v1\"" >> .gitpmoji.env
+        else
+            echo "Enter base url for OpenAI API (leave empty for default 'https://api.openai.com/v1')"
+            read -p "GITPMOJI_API_BASE_URL=" base_url
+            if [ -z "$base_url" ]; then
+                base_url="https://api.openai.com/v1"
+            fi
+            echo "export GITPMOJI_API_BASE_URL=\"$base_url\"" >> .gitpmoji.env
+        fi
+    else
+        echo "Enter base url for OpenAI API (leave empty for default 'https://api.openai.com/v1')"
+        read -p "GITPMOJI_API_BASE_URL=" base_url
+        if [ -z "$base_url" ]; then
+            base_url="https://api.openai.com/v1"
+        fi
+        echo "export GITPMOJI_API_BASE_URL=\"$base_url\"" >> .gitpmoji.env
+    fi
+    
+    # Process GITPMOJI_API_MODEL
+    if [ -n "$GITPMOJI_API_MODEL" ]; then
+        echo "Global GITPMOJI_API_MODEL found: $GITPMOJI_API_MODEL"
+        echo "Use global GITPMOJI_API_MODEL? (y/n)"
+        read USE_GLOBAL_MODEL
+        if [ "$USE_GLOBAL_MODEL" = "y" ]; then
+            echo "#export GITPMOJI_API_MODEL=\"gpt-4o\"" >> .gitpmoji.env
+        else
+            echo "Enter model for OpenAI API (leave empty for default 'gpt-4o')"
+            read -p "GITPMOJI_API_MODEL=" model
+            if [ -z "$model" ]; then
+                model="gpt-4o"
+            fi
+            echo "export GITPMOJI_API_MODEL=\"$model\"" >> .gitpmoji.env
+        fi
+    else
+        echo "Enter model for OpenAI API (leave empty for default 'gpt-4o')"
+        read -p "GITPMOJI_API_MODEL=" model
+        if [ -z "$model" ]; then
+            model="gpt-4o"
+        fi
+        echo "export GITPMOJI_API_MODEL=\"$model\"" >> .gitpmoji.env
+    fi
+    
+    # Process GITPMOJI_PREFIX_RX
+    if [ -n "$GITPMOJI_PREFIX_RX" ]; then
+        echo "Global GITPMOJI_PREFIX_RX found: $GITPMOJI_PREFIX_RX"
+        echo "Use global GITPMOJI_PREFIX_RX? (y/n)"
+        read USE_GLOBAL_PREFIX
+        if [ "$USE_GLOBAL_PREFIX" = "y" ]; then
+            echo "#export GITPMOJI_PREFIX_RX=\"\"" >> .gitpmoji.env
+        else
+            echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
+            echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
+            read -p "GITPMOJI_PREFIX_RX=" prefix
+            echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
+        fi
+    else
+        echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
+        echo "In format of sed RegExp use double backslash (\\\\) for escaping special symbols like {, }, ?, etc."
+        read -p "GITPMOJI_PREFIX_RX=" prefix
+        echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
+    fi
+    
+    echo ".gitpmoji.env created successfully"
+    echo "--- start of .gitpmoji.env ---"
+    cat .gitpmoji.env
+    echo "--- end of .gitpmoji.env ---"
 fi
 
 if [ "$GITPMOJI_ADD_TO_GITIGNORE" != "y" ]; then
@@ -110,48 +199,19 @@ echo "git hooks dir: $HOOKS_DIR"
 
 echo "Going to install git hook for prepare-commit-msg"
 
-relative_path() {
-    local common_part="$1" # for now
-    local result="." # for now
-
-    while [[ "${2#"$common_part"}" == "${2}" ]]; do
-        # no match, means that candidate common part is not correct
-        common_part="$(dirname "$common_part")"
-        result="${result}/.." # move to parent dir in relative path
-    done
-
-    if [[ "$common_part" == "/" ]]; then
-        # special case for root (no common path)
-        result="$result/"
-    fi
-
-    # since we now have identified the common part,
-    # compute the non-common part
-    local forward_part="${2#"$common_part"}"
-    # and now stick all parts together
-    result="${result}${forward_part}"
-    echo "$result"
-}
-
-echo "Looking for relative path between:"
-# Get absolute path of gitpmoji install dir
-TARGET="$(cd "$GITPMOJI_INSTALL_DIR"; pwd)"
-# Get absolute path of the hooks directory
-SOURCE="$(cd "$HOOKS_DIR"; pwd)"
-
-echo "TARGET: $TARGET"
-echo "SOURCE: $SOURCE"
-
-RELATIVE_PATH=$(relative_path "$SOURCE" "$TARGET")
-
-echo "RELATIVE_PATH: $RELATIVE_PATH"
-
 cd $HOOKS_DIR
 
-echo "Creating symlink for prepare-commit-msg"
-echo "ln -sf $RELATIVE_PATH/prepare-commit-msg.sh prepare-commit-msg"
+# Simple relative path: from .git/hooks go up twice (../../) then into GITPMOJI_DIR
+if [ "$GITPMOJI_DIR" = "." ]; then
+    SYMLINK_PATH="../../prepare-commit-msg.sh"
+else
+    SYMLINK_PATH="../../$GITPMOJI_DIR/prepare-commit-msg.sh"
+fi
 
-ln -sf $RELATIVE_PATH/prepare-commit-msg.sh prepare-commit-msg
+echo "Creating symlink for prepare-commit-msg"
+echo "ln -sf $SYMLINK_PATH prepare-commit-msg"
+
+ln -sf $SYMLINK_PATH prepare-commit-msg
 
 cd $TOP_LEVEL_GIT_DIR
 
