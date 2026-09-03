@@ -57,14 +57,14 @@ and follow the instructions.
 ### Installation Options
 
 The installer will prompt you to choose where to install gitpmoji:
-- **Default (`.gitpmoji`)**: Press Enter to install in a hidden `.gitpmoji` directory (recommended, automatically added to `.gitignore`)
-- **Project root**: Enter `.` to install scripts directly in your project root
+- **Default (`.gitpmoji`)**: Press Enter to install in a hidden `.gitpmoji` directory (recommended — a `.gitignore` with `*` is created inside that directory, so nothing in it gets tracked)
+- **Project root**: Enter `.` to install scripts directly in your project root (no directory-level ignore, since files land in the root)
 
 ### Global Configuration Support
 
-The installer now supports global configuration:
+The installer supports global configuration:
 - Create `~/.gitpmoji.env` to store your API key and settings globally
-- During installation, you can choose to use global settings or override them locally
+- During installation, for each setting the installer asks "Use global X? (y/n, default is 'yes')" — just press Enter to use your global value
 - Local `.gitpmoji.env` will source global config and can override specific values
 
 ## Setup manually

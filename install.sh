@@ -47,13 +47,9 @@ curl -o gpt.sh https://raw.githubusercontent.com/dollar2048/gitpmoji/main/gpt.sh
 chmod +x prepare-commit-msg.sh
 chmod +x gpt.sh
 
-echo "Do you want to add '$GITPMOJI_DIR' directory to gitignore?  (y/n)"
-read GITPMOJI_ADD_TO_GITIGNORE
-
-if [ "$GITPMOJI_ADD_TO_GITIGNORE" = "y" ]; then
-    echo "" >> $TOP_LEVEL_GIT_DIR/.gitignore
-    echo "# ignore gitpmoji directory" >> $TOP_LEVEL_GIT_DIR/.gitignore
-    echo "$GITPMOJI_DIR" >> $TOP_LEVEL_GIT_DIR/.gitignore
+if [ "$GITPMOJI_DIR" != "." ]; then
+    echo "*" > .gitignore
+    echo "Created $GITPMOJI_DIR/.gitignore to ignore all files in this directory"
 fi
 
 #check if .gitpmoji.env exists
@@ -90,9 +86,9 @@ EOF
     # Process GITPMOJI_API_KEY
     if [ -n "$GITPMOJI_API_KEY" ]; then
         echo "Global GITPMOJI_API_KEY found"
-        echo "Use global GITPMOJI_API_KEY? (y/n)"
+        echo "Use global GITPMOJI_API_KEY? (y/n, default is 'yes')"
         read USE_GLOBAL_API_KEY
-        if [ "$USE_GLOBAL_API_KEY" = "y" ]; then
+        if [ "$USE_GLOBAL_API_KEY" != "n" ]; then
             echo "#export GITPMOJI_API_KEY=\"_your_api_key_\"" >> .gitpmoji.env
         else
             echo "Enter your OpenAI API key (https://platform.openai.com/account/api-keys):"
@@ -108,9 +104,9 @@ EOF
     # Process GITPMOJI_API_BASE_URL
     if [ -n "$GITPMOJI_API_BASE_URL" ]; then
         echo "Global GITPMOJI_API_BASE_URL found: $GITPMOJI_API_BASE_URL"
-        echo "Use global GITPMOJI_API_BASE_URL? (y/n)"
+        echo "Use global GITPMOJI_API_BASE_URL? (y/n, default is 'yes')"
         read USE_GLOBAL_BASE_URL
-        if [ "$USE_GLOBAL_BASE_URL" = "y" ]; then
+        if [ "$USE_GLOBAL_BASE_URL" != "n" ]; then
             echo "#export GITPMOJI_API_BASE_URL=\"https://api.openai.com/v1\"" >> .gitpmoji.env
         else
             echo "Enter base url for OpenAI API (leave empty for default 'https://api.openai.com/v1')"
@@ -132,9 +128,9 @@ EOF
     # Process GITPMOJI_API_MODEL
     if [ -n "$GITPMOJI_API_MODEL" ]; then
         echo "Global GITPMOJI_API_MODEL found: $GITPMOJI_API_MODEL"
-        echo "Use global GITPMOJI_API_MODEL? (y/n)"
+        echo "Use global GITPMOJI_API_MODEL? (y/n, default is 'yes')"
         read USE_GLOBAL_MODEL
-        if [ "$USE_GLOBAL_MODEL" = "y" ]; then
+        if [ "$USE_GLOBAL_MODEL" != "n" ]; then
             echo "#export GITPMOJI_API_MODEL=\"gpt-4o\"" >> .gitpmoji.env
         else
             echo "Enter model for OpenAI API (leave empty for default 'gpt-4o')"
@@ -156,9 +152,9 @@ EOF
     # Process GITPMOJI_PREFIX_RX
     if [ -n "$GITPMOJI_PREFIX_RX" ]; then
         echo "Global GITPMOJI_PREFIX_RX found: $GITPMOJI_PREFIX_RX"
-        echo "Use global GITPMOJI_PREFIX_RX? (y/n)"
+        echo "Use global GITPMOJI_PREFIX_RX? (y/n, default is 'yes')"
         read USE_GLOBAL_PREFIX
-        if [ "$USE_GLOBAL_PREFIX" = "y" ]; then
+        if [ "$USE_GLOBAL_PREFIX" != "n" ]; then
             echo "#export GITPMOJI_PREFIX_RX=\"\"" >> .gitpmoji.env
         else
             echo "Enter prefix for commit messages which will be untouched as first keyword for each message"
@@ -179,13 +175,13 @@ EOF
     echo "--- end of .gitpmoji.env ---"
 fi
 
-if [ "$GITPMOJI_ADD_TO_GITIGNORE" != "y" ]; then
-    echo -e "\033[0;31m Do you want to add environment file '$GITPMOJI_DIR/.gitpmoji.env' to .gitignore to keep your API key secret? (y/n)\033[0m"    
+if [ "$GITPMOJI_DIR" = "." ]; then
+    echo -e "\033[0;31m Do you want to add environment file '.gitpmoji.env' to .gitignore to keep your API key secret? (y/n)\033[0m"
     read GITPMOJI_ADD_ENV_TO_GITIGNORE
     if [ "$GITPMOJI_ADD_ENV_TO_GITIGNORE" = "y" ]; then
         echo "" >> $TOP_LEVEL_GIT_DIR/.gitignore
         echo "# ignore environment file for gitpmoji" >> $TOP_LEVEL_GIT_DIR/.gitignore
-        echo "$GITPMOJI_DIR/.gitpmoji.env" >> $TOP_LEVEL_GIT_DIR/.gitignore
+        echo ".gitpmoji.env" >> $TOP_LEVEL_GIT_DIR/.gitignore
     fi
 fi
 
@@ -199,6 +195,7 @@ echo "git hooks dir: $HOOKS_DIR"
 
 echo "Going to install git hook for prepare-commit-msg"
 
+mkdir -p "$HOOKS_DIR"
 cd $HOOKS_DIR
 
 # Simple relative path: from .git/hooks go up twice (../../) then into GITPMOJI_DIR
