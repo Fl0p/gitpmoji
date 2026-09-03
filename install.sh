@@ -169,6 +169,34 @@ EOF
         echo "export GITPMOJI_PREFIX_RX=\"$prefix\"" >> .gitpmoji.env
     fi
     
+    # Process GITPMOJI_MULTILINE_COMMIT
+    if [ -n "$GITPMOJI_MULTILINE_COMMIT" ]; then
+        echo "Global GITPMOJI_MULTILINE_COMMIT found: $GITPMOJI_MULTILINE_COMMIT"
+        echo "Use global GITPMOJI_MULTILINE_COMMIT? (y/n, default is 'yes')"
+        read USE_GLOBAL_MULTILINE_COMMIT
+        if [ "$USE_GLOBAL_MULTILINE_COMMIT" != "n" ]; then
+            echo "#export GITPMOJI_MULTILINE_COMMIT=\"false\"" >> .gitpmoji.env
+        else
+            echo "Use multiple lines for generated commit messages instead of a single short line? (y/n, default is 'no')"
+            read USE_MULTILINE_COMMIT
+            if [ "$USE_MULTILINE_COMMIT" = "y" ]; then
+                multiline_commit="true"
+            else
+                multiline_commit="false"
+            fi
+            echo "export GITPMOJI_MULTILINE_COMMIT=\"$multiline_commit\"" >> .gitpmoji.env
+        fi
+    else
+        echo "Use multiple lines for generated commit messages instead of a single short line? (y/n, default is 'no')"
+        read USE_MULTILINE_COMMIT
+        if [ "$USE_MULTILINE_COMMIT" = "y" ]; then
+            multiline_commit="true"
+        else
+            multiline_commit="false"
+        fi
+        echo "export GITPMOJI_MULTILINE_COMMIT=\"$multiline_commit\"" >> .gitpmoji.env
+    fi
+
     echo ".gitpmoji.env created successfully"
     echo "--- start of .gitpmoji.env ---"
     cat .gitpmoji.env

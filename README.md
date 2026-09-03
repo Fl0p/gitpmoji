@@ -89,11 +89,14 @@ export GITPMOJI_API_BASE_URL="https://api.openai.com/v1"
 export GITPMOJI_API_MODEL="gpt-4o"
 # Regex for sed command. emoji will be placed after it if found
 export GITPMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
+# Generate a multi-line commit message (max 100 words) instead of a single short line (max ~100 chars)
+export GITPMOJI_MULTILINE_COMMIT="false"
 ```
 
 > ❗ Note: 
 > - GITPMOJI_API_BASE_URL is optional and defaults to https://api.openai.com/v1
 > - GITPMOJI_API_MODEL is optional and defaults to gpt-4o
+> - GITPMOJI_MULTILINE_COMMIT is optional and defaults to false (single-line commit message)
 > - Local `.gitpmoji.env` can source global `~/.gitpmoji.env` and override specific values
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
