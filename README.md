@@ -47,7 +47,7 @@ git diff | ./gpt.sh -a -d
 
 Navigate to your project directory and run:
 ```
-curl -o install.sh https://raw.githubusercontent.com/dollar2048/gitpmoji/main/install.sh && bash install.sh && rm install.sh
+curl -o install.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh && bash install.sh && rm install.sh
 ```
 and follow the instructions.
 
@@ -113,7 +113,7 @@ Simply write your commit messages as usual. GITPMOJI will automatically add rele
 
 ## Examples
 
-Check out the [commit messages](https://github.com/dollar2048/gitpmoji/commits/main/) in this repo
+Check out the [commit messages](https://github.com/Fl0p/gitpmoji/commits/main/) in this repo
 
 ![Screenshot 2024-08-22 at 11 43 32](https://github.com/user-attachments/assets/f69ff571-e304-41c1-baec-7d53219bd756)
 

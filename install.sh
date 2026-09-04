@@ -2,7 +2,7 @@
 
 #script for installing gitpmoji. oneliner
 # to run it as one liner you can use this command:
-# curl -s https://raw.githubusercontent.com/dollar2048/gitpmoji/main/install.sh | bash
+# curl -s https://raw.githubusercontent.com/Fl0p/gitpmoji/main/install.sh | bash
 
 CURRENT_DIR=$(pwd)
 
@@ -40,8 +40,8 @@ cd $GITPMOJI_INSTALL_DIR
 pwd
 
 #download from github
-curl -o prepare-commit-msg.sh https://raw.githubusercontent.com/dollar2048/gitpmoji/main/prepare-commit-msg.sh
-curl -o gpt.sh https://raw.githubusercontent.com/dollar2048/gitpmoji/main/gpt.sh
+curl -o prepare-commit-msg.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/prepare-commit-msg.sh
+curl -o gpt.sh https://raw.githubusercontent.com/Fl0p/gitpmoji/main/gpt.sh
 
 #make executable
 chmod +x prepare-commit-msg.sh
