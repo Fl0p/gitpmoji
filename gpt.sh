@@ -14,6 +14,7 @@ fi
 API_KEY=$GITPMOJI_API_KEY
 API_BASE_URL=${GITPMOJI_API_BASE_URL:-https://api.openai.com/v1}
 API_MODEL=${GITPMOJI_API_MODEL:-gpt-4o}
+MULTILINE_COMMIT=${GITPMOJI_MULTILINE_COMMIT:-false}
 
 # check if API_KEY is set
 if [ -z "$API_KEY" ]; then
@@ -117,6 +118,7 @@ if [ "$VERBOSE" = true ]; then
   echo -e "MARKDOWN: $MARKDOWN"
   echo -e "MESSAGE: $MESSAGE"
   echo -e "EMOJI: $EMOJI"
+  echo -e "MULTILINE_COMMIT: $MULTILINE_COMMIT"
 fi
 
 # Check if both emoji and message are provided
@@ -181,9 +183,20 @@ generate_message() {
   You will provide only one commit message for each diff.
   Your answer should contain only single commit message, nothing else.
   Use english language only.
-  Use multiple lines for the response.
-  Try to use maximum 100 words in the response.
   "
+
+  if [ "$MULTILINE_COMMIT" = true ]; then
+    SYSTEM_PROMPT="${SYSTEM_PROMPT}
+    Use multiple lines for the response.
+    Try to use maximum 100 words in the response.
+    "
+  else
+    SYSTEM_PROMPT="${SYSTEM_PROMPT}
+    Use ONLY 1 line for the response.
+    Try to use up to 60 characters in the response.
+    If it's not enough then use maximum 100 characters in the response.
+    "
+  fi
 
   PREFIX_RX="\"" 
 

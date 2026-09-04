@@ -1,6 +1,4 @@
 # GITPMOJI
-========
-
 Enhanced Git commits using AI
 -----------------------------
 
@@ -45,7 +43,6 @@ git diff | ./gpt.sh -a -d
 ![Screenshot 2024-10-31 at 13 34 00](https://github.com/user-attachments/assets/7c190fd8-cfc3-4302-b44c-6cfd16a95329)
 
 
-
 ## Setup as one liner wizard
 
 Navigate to your project directory and run:
@@ -57,14 +54,14 @@ and follow the instructions.
 ### Installation Options
 
 The installer will prompt you to choose where to install gitpmoji:
-- **Default (`.gitpmoji`)**: Press Enter to install in a hidden `.gitpmoji` directory (recommended, automatically added to `.gitignore`)
-- **Project root**: Enter `.` to install scripts directly in your project root
+- **Default (`.gitpmoji`)**: Press Enter to install in a hidden `.gitpmoji` directory (recommended — a `.gitignore` with `*` is created inside that directory, so nothing in it gets tracked)
+- **Project root**: Enter `.` to install scripts directly in your project root (no directory-level ignore, since files land in the root)
 
 ### Global Configuration Support
 
-The installer now supports global configuration:
+The installer supports global configuration:
 - Create `~/.gitpmoji.env` to store your API key and settings globally
-- During installation, you can choose to use global settings or override them locally
+- During installation, for each setting the installer asks "Use global X? (y/n, default is 'yes')" — just press Enter to use your global value
 - Local `.gitpmoji.env` will source global config and can override specific values
 
 ## Setup manually
@@ -89,11 +86,14 @@ export GITPMOJI_API_BASE_URL="https://api.openai.com/v1"
 export GITPMOJI_API_MODEL="gpt-4o"
 # Regex for sed command. emoji will be placed after it if found
 export GITPMOJI_PREFIX_RX="TICKET-[0-9]\{1,5\} \{0,1\}"
+# Generate a multi-line commit message (max 100 words) instead of a single short line (max ~100 chars)
+export GITPMOJI_MULTILINE_COMMIT="false"
 ```
 
 > ❗ Note: 
 > - GITPMOJI_API_BASE_URL is optional and defaults to https://api.openai.com/v1
 > - GITPMOJI_API_MODEL is optional and defaults to gpt-4o
+> - GITPMOJI_MULTILINE_COMMIT is optional and defaults to false (single-line commit message)
 > - Local `.gitpmoji.env` can source global `~/.gitpmoji.env` and override specific values
 
 - make sure to have `prepare-commit-msg.sh` and `gpt.sh` executable
