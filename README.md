@@ -1,6 +1,4 @@
 # GITPMOJI
-========
-
 Enhanced Git commits using AI
 -----------------------------
 
@@ -43,7 +41,6 @@ To use this feature, simply run:
 git diff | ./gpt.sh -a -d
 ```
 ![Screenshot 2024-10-31 at 13 34 00](https://github.com/user-attachments/assets/7c190fd8-cfc3-4302-b44c-6cfd16a95329)
-
 
 
 ## Setup as one liner wizard
